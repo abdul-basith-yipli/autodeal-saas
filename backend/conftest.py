@@ -52,3 +52,15 @@ def super_admin_client(api_client, super_admin):
 @pytest.fixture
 def showroom(tenant):
     return Showroom.objects.create(tenant=tenant, name="Main Branch", code="Main")
+
+
+@pytest.fixture
+def vehicle(tenant, showroom):
+    from apps.vehicles.models import Vehicle, VehicleBrand
+    brand = VehicleBrand.objects.create(tenant=tenant, name="Toyota")
+    return Vehicle.objects.create(
+        tenant=tenant, showroom=showroom, brand=brand,
+        vin="1HGCM82633A004352", year=2020, mileage=15000,
+        fuel_type="petrol", transmission="automatic", condition="good",
+        price=25000.00, status="available",
+    )
