@@ -48,10 +48,27 @@ class VehicleImageSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class VehicleInspectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VehicleInspection
+        fields = "__all__"
+        read_only_fields = ["inspector"]
+
+
+class VehiclePriceHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VehiclePriceHistory
+        fields = "__all__"
+        read_only_fields = ["changed_by"]
+
+
 class VehicleSerializer(serializers.ModelSerializer):
     images = VehicleImageSerializer(many=True, read_only=True)
     spec_values = VehicleSpecValueSerializer(many=True, read_only=True)
+    inspections = VehicleInspectionSerializer(many=True, read_only=True)
+    price_history = VehiclePriceHistorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Vehicle
         fields = "__all__"
+        read_only_fields = ["added_by"]

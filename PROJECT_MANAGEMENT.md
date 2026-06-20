@@ -24,10 +24,12 @@ Issue (Backlog) → Ready → In progress → PR (In review) → Merged → Issu
    - Title referencing the issue: `Closes #6 — brand/model/year endpoints`
    - Body with checklist from the issue
    - Labels matching the issue
-5. **PR reviewed and merged** (squash merge recommended)
-6. **Issue auto-closes** via the `Closes #N` keyword in the PR **body** (not title)
-
-   > Note: For squash merges, include `Closes #N` in the PR body. GitHub detects it there and closes the issue automatically.
+5. **PR reviewed and merged** with squash, providing subject explicitly:
+   ```bash
+   gh pr merge <number> --squash --delete-branch \
+     --subject "Closes #N: short description"
+   ```
+6. **Issue auto-closes** because `Closes #N` is in the squash commit subject
 
 ---
 

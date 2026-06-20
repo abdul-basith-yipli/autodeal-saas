@@ -3,11 +3,13 @@ from common.views import TenantAwareViewSet
 from .models import (
     VehicleCategory, VehicleBrand, VehicleModel, VehicleYear,
     VehicleSpecification, VehicleSpecValue, Vehicle, VehicleImage,
+    VehicleInspection, VehiclePriceHistory,
 )
 from .serializers import (
     VehicleCategorySerializer, VehicleBrandSerializer, VehicleModelSerializer,
     VehicleYearSerializer, VehicleSpecificationSerializer,
     VehicleSpecValueSerializer, VehicleSerializer, VehicleImageSerializer,
+    VehicleInspectionSerializer, VehiclePriceHistorySerializer,
 )
 
 
@@ -70,8 +72,13 @@ class VehicleSpecValueViewSet(viewsets.ModelViewSet):
 
 
 class VehicleViewSet(TenantAwareViewSet):
-    queryset = Vehicle.objects.all()
+    queryset = Vehicle.objects.select_related(
+        "category", "brand", "model", "showroom", "added_by"
+    ).all()
     serializer_class = VehicleSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(added_by=self.request.user)
 
 
 class VehicleImageViewSet(viewsets.ModelViewSet):
@@ -80,3 +87,30 @@ class VehicleImageViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return super().get_queryset().filter(vehicle_id=self.kwargs["vehicle_id"])
+
+
+class VehicleInspectionViewSet(viewsets.ModelViewSet):
+    queryset = VehicleInspection.objects.all()
+    serializer_class = VehicleInspectionSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        vehicle_id = self.kwargs.get("vehicle_id")
+        if vehicle_id:
+            qs = qs.filter(vehicle_id=vehicle_id)
+        return qs
+
+    def perform_create(self, serializer):
+        serializer.save(inspector=self.request.user)
+
+
+class VehiclePriceHistoryViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = VehiclePriceHistory.objects.all()
+    serializer_class = VehiclePriceHistorySerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        vehicle_id = self.kwargs.get("vehicle_id")
+        if vehicle_id:
+            qs = qs.filter(vehicle_id=vehicle_id)
+        return qs

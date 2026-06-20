@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     VehicleCategoryViewSet, VehicleBrandViewSet, VehicleModelViewSet,
     VehicleYearViewSet, VehicleSpecificationViewSet, VehicleViewSet,
-    VehicleImageViewSet,
+    VehicleImageViewSet, VehicleInspectionViewSet, VehiclePriceHistoryViewSet,
 )
 
 router = DefaultRouter()
@@ -19,4 +19,6 @@ urlpatterns = [
     path("vehicle-categories/<int:category_id>/specs/", VehicleSpecificationViewSet.as_view({"get": "list", "post": "create"})),
     path("vehicles/<int:vehicle_id>/spec-values/", VehicleSpecValueViewSet.as_view({"get": "list", "post": "create"})),
     path("vehicles/<int:vehicle_id>/images/", VehicleImageViewSet.as_view({"get": "list", "post": "create"})),
+    path("vehicles/<int:vehicle_id>/inspections/", VehicleInspectionViewSet.as_view({"get": "list", "post": "create"})),
+    path("vehicles/<int:vehicle_id>/price-history/", VehiclePriceHistoryViewSet.as_view({"get": "list"})),
 ]
