@@ -1,3 +1,4 @@
+from rest_framework import viewsets
 from common.views import TenantAwareViewSet
 from .models import (
     VehicleCategory, VehicleBrand, VehicleModel, VehicleYear,
@@ -21,13 +22,27 @@ class VehicleBrandViewSet(TenantAwareViewSet):
 
 
 class VehicleModelViewSet(viewsets.ModelViewSet):
-    queryset = VehicleModel.objects.all()
+    queryset = VehicleModel.objects.select_related("brand").all()
     serializer_class = VehicleModelSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        brand_id = self.kwargs.get("brand_id")
+        if brand_id:
+            qs = qs.filter(brand_id=brand_id)
+        return qs
 
 
 class VehicleYearViewSet(viewsets.ModelViewSet):
-    queryset = VehicleYear.objects.all()
+    queryset = VehicleYear.objects.select_related("model__brand").all()
     serializer_class = VehicleYearSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        model_id = self.kwargs.get("model_id")
+        if model_id:
+            qs = qs.filter(model_id=model_id)
+        return qs
 
 
 class VehicleSpecificationViewSet(TenantAwareViewSet):
