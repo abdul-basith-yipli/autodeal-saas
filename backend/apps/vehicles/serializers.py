@@ -50,6 +50,7 @@ class VehicleImageSerializer(serializers.ModelSerializer):
 
 class VehicleSerializer(serializers.ModelSerializer):
     images = VehicleImageSerializer(many=True, read_only=True)
+    spec_values = VehicleSpecValueSerializer(many=True, read_only=True)
 
     class Meta:
         model = Vehicle
