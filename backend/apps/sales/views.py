@@ -1,8 +1,8 @@
-from rest_framework import viewsets
+from common.views import TenantAwareViewSet
 from .models import Sale
 from .serializers import SaleSerializer
 
 
-class SaleViewSet(viewsets.ModelViewSet):
+class SaleViewSet(TenantAwareViewSet):
     queryset = Sale.objects.all()
     serializer_class = SaleSerializer

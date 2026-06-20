@@ -1,19 +1,19 @@
-from rest_framework import viewsets
+from common.views import TenantAwareViewSet
 from .models import StaffProfile, Position, PerformanceRecord
 from .serializers import StaffProfileSerializer, PositionSerializer, PerformanceRecordSerializer
 
 
-class StaffProfileViewSet(viewsets.ModelViewSet):
+class StaffProfileViewSet(TenantAwareViewSet):
     queryset = StaffProfile.objects.all()
     serializer_class = StaffProfileSerializer
 
 
-class PositionViewSet(viewsets.ModelViewSet):
+class PositionViewSet(TenantAwareViewSet):
     queryset = Position.objects.all()
     serializer_class = PositionSerializer
 
 
-class PerformanceRecordViewSet(viewsets.ModelViewSet):
+class PerformanceRecordViewSet(TenantAwareViewSet):
     queryset = PerformanceRecord.objects.all()
     serializer_class = PerformanceRecordSerializer
 

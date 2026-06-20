@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from common.views import TenantAwareViewSet
 from .models import Customer, Enquiry, FollowUp, CommunicationLog
 from .serializers import (
     CustomerSerializer, EnquirySerializer, FollowUpSerializer,
@@ -6,17 +6,17 @@ from .serializers import (
 )
 
 
-class CustomerViewSet(viewsets.ModelViewSet):
+class CustomerViewSet(TenantAwareViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
 
 
-class EnquiryViewSet(viewsets.ModelViewSet):
+class EnquiryViewSet(TenantAwareViewSet):
     queryset = Enquiry.objects.all()
     serializer_class = EnquirySerializer
 
 
-class FollowUpViewSet(viewsets.ModelViewSet):
+class FollowUpViewSet(TenantAwareViewSet):
     queryset = FollowUp.objects.all()
     serializer_class = FollowUpSerializer
 
@@ -24,7 +24,7 @@ class FollowUpViewSet(viewsets.ModelViewSet):
         return super().get_queryset().filter(enquiry_id=self.kwargs["enquiry_id"])
 
 
-class CommunicationLogViewSet(viewsets.ModelViewSet):
+class CommunicationLogViewSet(TenantAwareViewSet):
     queryset = CommunicationLog.objects.all()
     serializer_class = CommunicationLogSerializer
 

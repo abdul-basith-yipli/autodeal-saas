@@ -1,8 +1,8 @@
-from rest_framework import viewsets
+from common.views import TenantAwareViewSet
 from .models import Department
 from .serializers import DepartmentSerializer
 
 
-class DepartmentViewSet(viewsets.ModelViewSet):
+class DepartmentViewSet(TenantAwareViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer

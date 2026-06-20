@@ -1,14 +1,14 @@
-from rest_framework import viewsets
+from common.views import TenantAwareViewSet
 from .models import Showroom, ShowroomPerformance
 from .serializers import ShowroomSerializer, ShowroomPerformanceSerializer
 
 
-class ShowroomViewSet(viewsets.ModelViewSet):
+class ShowroomViewSet(TenantAwareViewSet):
     queryset = Showroom.objects.all()
     serializer_class = ShowroomSerializer
 
 
-class ShowroomPerformanceViewSet(viewsets.ModelViewSet):
+class ShowroomPerformanceViewSet(TenantAwareViewSet):
     queryset = ShowroomPerformance.objects.all()
     serializer_class = ShowroomPerformanceSerializer
 
