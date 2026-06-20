@@ -1,0 +1,11 @@
+django==5.2
+djangorestframework==3.15
+djangorestframework-simplejwt==5.4
+drf-spectacular==0.28
+django-channels==4.2
+django-cors-headers==4.6
+psycopg2-binary==2.9
+redis==5.2
+celery==5.4
+Pillow==11.1
+python-dotenv==1.1
