@@ -28,6 +28,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         CR_STAFF = "cr_staff", "CR Staff"
         INVENTORY_STAFF = "inventory_staff", "Inventory Staff"
         FINANCE_STAFF = "finance_staff", "Finance Staff"
+        CUSTOMER = "customer", "Customer"
 
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=255)

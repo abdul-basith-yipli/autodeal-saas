@@ -1,4 +1,5 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.response import Response
 
 
 def _get_tenant(request):
@@ -23,3 +24,15 @@ class TenantAwareViewSet(viewsets.ModelViewSet):
             serializer.save(tenant=tenant)
         else:
             serializer.save()
+
+    def create(self, request, *args, **kwargs):
+        tenant = _get_tenant(request)
+        if tenant and "tenant" not in request.data:
+            mutable = request.data.copy()
+            mutable["tenant"] = tenant.id
+            serializer = self.get_serializer(data=mutable)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return super().create(request, *args, **kwargs)
