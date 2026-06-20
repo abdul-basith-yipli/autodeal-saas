@@ -3,13 +3,14 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import {
   Box, Typography, Paper, Chip, Button, TextField, MenuItem,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  IconButton,
+  IconButton, Collapse,
 } from '@mui/material'
+import { Add } from '@mui/icons-material'
 import Grid from '@mui/material/Grid2'
 import {
   enquiriesApi, customersApi, followupsApi,
   vehiclesApi,
-  type Enquiry, type Customer, type FollowUp,
+  type Enquiry, type Customer,
 } from '../../services/core'
 
 const statusColors: Record<string, string> = {
@@ -28,12 +29,15 @@ export default function EnquiryDetailPage() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const [enquiry, setEnquiry] = useState<Enquiry | null>(null)
+  const [showFuForm, setShowFuForm] = useState(false)
   const isEdit = pathname.endsWith('/edit')
   const isNew = id === 'new'
 
+  const reload = () => { if (id) enquiriesApi.get(Number(id)).then(setEnquiry) }
+
   useEffect(() => {
-    if (id && !isNew && !isEdit) enquiriesApi.get(Number(id)).then(setEnquiry)
-    if (id && isEdit) enquiriesApi.get(Number(id)).then(setEnquiry)
+    if (id && !isNew && !isEdit) reload()
+    if (id && isEdit) reload()
   }, [id])
 
   const handleSave = () => navigate('/enquiries')
@@ -76,9 +80,19 @@ export default function EnquiryDetailPage() {
 
         <Grid size={{ xs: 12 }}>
           <Paper sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>Follow-ups</Typography>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+              <Typography variant="h6">Follow-ups</Typography>
+              <Button size="small" startIcon={<Add />} onClick={() => setShowFuForm(!showFuForm)}>
+                {showFuForm ? 'Cancel' : 'Add Follow-up'}
+              </Button>
+            </Box>
+
+            <Collapse in={showFuForm}>
+              <FollowUpForm enquiryId={enquiry.id} onSaved={() => { setShowFuForm(false); reload() }} />
+            </Collapse>
+
             {enquiry.followups.length === 0 ? (
-              <Typography color="text.secondary">No follow-ups yet.</Typography>
+              <Typography color="text.secondary" sx={{ mt: 1 }}>No follow-ups yet.</Typography>
             ) : (
               <TableContainer>
                 <Table size="small">
@@ -103,7 +117,7 @@ export default function EnquiryDetailPage() {
                           {fu.status === 'pending' && (
                             <Button size="small" onClick={async () => {
                               await followupsApi.complete(enquiry.id, fu.id)
-                              enquiriesApi.get(enquiry.id).then(setEnquiry)
+                              reload()
                             }}>Complete</Button>
                           )}
                         </TableCell>
@@ -132,6 +146,54 @@ export default function EnquiryDetailPage() {
               ))
             )}
           </Paper>
+        </Grid>
+      </Grid>
+    </Box>
+  )
+}
+
+function FollowUpForm({ enquiryId, onSaved }: { enquiryId: number; onSaved: () => void }) {
+  const [form, setForm] = useState({
+    followup_type: 'call', scheduled_at: '', note: '', assigned_to: '',
+  })
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    await followupsApi.create(enquiryId, {
+      ...form,
+      enquiry: enquiryId,
+      assigned_to: form.assigned_to ? Number(form.assigned_to) : null,
+      scheduled_at: new Date(form.scheduled_at).toISOString(),
+    })
+    onSaved()
+    setForm({ followup_type: 'call', scheduled_at: '', note: '', assigned_to: '' })
+  }
+
+  return (
+    <Box component="form" onSubmit={handleSubmit} sx={{ mb: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 4 }}>
+          <TextField fullWidth size="small" select label="Type" required value={form.followup_type}
+            onChange={(e) => setForm({ ...form, followup_type: e.target.value })}>
+            {Object.entries(typeLabels).map(([k, v]) => <MenuItem key={k} value={k}>{v}</MenuItem>)}
+          </TextField>
+        </Grid>
+        <Grid size={{ xs: 4 }}>
+          <TextField fullWidth size="small" label="Scheduled At" type="datetime-local" required
+            value={form.scheduled_at}
+            onChange={(e) => setForm({ ...form, scheduled_at: e.target.value })}
+            InputLabelProps={{ shrink: true }} />
+        </Grid>
+        <Grid size={{ xs: 4 }}>
+          <TextField fullWidth size="small" label="Assigned To (User ID)" value={form.assigned_to}
+            onChange={(e) => setForm({ ...form, assigned_to: e.target.value })} />
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          <TextField fullWidth size="small" label="Note" multiline rows={2} value={form.note}
+            onChange={(e) => setForm({ ...form, note: e.target.value })} />
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          <Button type="submit" variant="contained" size="small">Create Follow-up</Button>
         </Grid>
       </Grid>
     </Box>
