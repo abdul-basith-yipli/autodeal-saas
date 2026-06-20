@@ -7,7 +7,6 @@ export interface LoginCredentials {
 
 export interface AuthResponse {
   access: string
-  refresh: string
 }
 
 export interface User {
@@ -23,7 +22,6 @@ export const authService = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     const { data } = await api.post('/auth/login/', credentials)
     localStorage.setItem('access_token', data.access)
-    localStorage.setItem('refresh_token', data.refresh)
     return data
   },
 
@@ -32,8 +30,18 @@ export const authService = {
     return data
   },
 
-  logout() {
-    localStorage.clear()
-    window.location.href = '/login'
+  async refresh(): Promise<string> {
+    const { data } = await api.post('/auth/refresh/')
+    localStorage.setItem('access_token', data.access)
+    return data.access
+  },
+
+  async logout() {
+    try {
+      await api.post('/auth/logout/')
+    } finally {
+      localStorage.removeItem('access_token')
+      window.location.href = '/login'
+    }
   },
 }

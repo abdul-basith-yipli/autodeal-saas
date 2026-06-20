@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
 import { authService, type User } from '../services/auth'
 
 interface AuthContextType {
@@ -14,17 +14,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
+  const fetchUser = useCallback(async () => {
+    try {
+      const u = await authService.me()
+      setUser(u)
+    } catch {
+      localStorage.removeItem('access_token')
+      setUser(null)
+    }
+  }, [])
+
   useEffect(() => {
     const token = localStorage.getItem('access_token')
     if (token) {
-      authService.me()
-        .then(setUser)
-        .catch(() => localStorage.clear())
-        .finally(() => setLoading(false))
+      fetchUser().finally(() => setLoading(false))
     } else {
-      setLoading(false)
+      authService.refresh()
+        .then(() => fetchUser())
+        .catch(() => setUser(null))
+        .finally(() => setLoading(false))
     }
-  }, [])
+  }, [fetchUser])
 
   const login = async (email: string, password: string) => {
     await authService.login({ email, password })
