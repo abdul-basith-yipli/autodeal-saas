@@ -9,6 +9,8 @@ import DepartmentsPage from './pages/departments/DepartmentsPage'
 import StaffPage from './pages/staff/StaffPage'
 import VehiclesPage from './pages/vehicles/VehiclesPage'
 import VehicleDetailPage from './pages/vehicles/VehicleDetailPage'
+import EnquiriesPage from './pages/enquiries/EnquiriesPage'
+import EnquiryDetailPage from './pages/enquiries/EnquiryDetailPage'
 
 function ProtectedLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -30,6 +32,9 @@ export default function App() {
         <Route path="/vehicles" element={<ProtectedLayout><VehiclesPage /></ProtectedLayout>} />
         <Route path="/vehicles/:id" element={<ProtectedLayout><VehicleDetailPage /></ProtectedLayout>} />
         <Route path="/vehicles/:id/edit" element={<ProtectedLayout><VehicleDetailPage /></ProtectedLayout>} />
+        <Route path="/enquiries" element={<ProtectedLayout><EnquiriesPage /></ProtectedLayout>} />
+        <Route path="/enquiries/:id" element={<ProtectedLayout><EnquiryDetailPage /></ProtectedLayout>} />
+        <Route path="/enquiries/:id/edit" element={<ProtectedLayout><EnquiryDetailPage /></ProtectedLayout>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AuthProvider>
