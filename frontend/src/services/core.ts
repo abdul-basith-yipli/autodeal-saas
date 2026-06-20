@@ -158,6 +158,42 @@ export const customersApi = {
   delete: (id: number) => service.delete('/customers/', id),
 }
 
+export interface Wishlist {
+  id: number; customer: number; vehicle: number; added_at: string
+  vehicle_detail?: Vehicle
+}
+
+export interface Booking {
+  id: number; customer: number; vehicle: number; status: string
+  message: string; preferred_date: string; created_at: string; updated_at: string
+  vehicle_detail?: Vehicle
+}
+
+export interface Payment {
+  id: number; booking: number; amount: string; payment_method: string
+  transaction_id: string; status: string; paid_at: string; created_at: string
+}
+
+export const wishlistApi = {
+  list: () => service.list<Wishlist>('/customers/wishlist/'),
+  add: (vehicle: number) => api.post<Wishlist>('/customers/wishlist/', { vehicle }).then(r => r.data),
+  remove: (id: number) => service.delete('/customers/wishlist/', id),
+  check: (vehicle: number) => api.get<{ is_wishlisted: boolean; wishlist_id?: number }>('/customers/wishlist/check/', { params: { vehicle } }).then(r => r.data),
+}
+
+export const bookingsApi = {
+  list: () => service.list<Booking>('/customers/bookings/'),
+  get: (id: number) => service.get<Booking>('/customers/bookings/', id),
+  create: (data: Partial<Booking>) => service.create('/customers/bookings/', data),
+  cancel: (id: number) => api.post(`/customers/bookings/${id}/cancel/`).then(r => r.data),
+  pay: (id: number, method: string) => api.post(`/customers/bookings/${id}/pay/`, { payment_method: method }).then(r => r.data as Payment),
+}
+
+export const paymentsApi = {
+  list: () => service.list<Payment>('/customers/payments/'),
+  get: (id: number) => service.get<Payment>('/customers/payments/', id),
+}
+
 export const enquiriesApi = {
   list: () => service.list<Enquiry>('/enquiries/'),
   get: (id: number) => service.get<Enquiry>('/enquiries/', id),

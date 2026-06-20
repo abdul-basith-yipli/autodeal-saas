@@ -18,6 +18,13 @@ export interface User {
   date_joined: string
 }
 
+export interface RegisterData {
+  email: string
+  full_name: string
+  password: string
+  role?: string
+}
+
 export const authService = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     const { data } = await api.post('/auth/login/', credentials)
@@ -34,6 +41,11 @@ export const authService = {
     const { data } = await api.post('/auth/refresh/')
     localStorage.setItem('access_token', data.access)
     return data.access
+  },
+
+  async register(data: RegisterData): Promise<User> {
+    const { data: user } = await api.post('/auth/register/', data)
+    return user
   },
 
   async logout() {

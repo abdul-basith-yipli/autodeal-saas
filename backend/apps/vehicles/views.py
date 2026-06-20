@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from common.views import TenantAwareViewSet
 from .models import (
     VehicleCategory, VehicleBrand, VehicleModel, VehicleYear,
@@ -76,6 +76,11 @@ class VehicleViewSet(TenantAwareViewSet):
         "category", "brand", "model", "showroom", "added_by"
     ).all()
     serializer_class = VehicleSerializer
+
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return [permissions.AllowAny()]
+        return super().get_permissions()
 
     def perform_create(self, serializer):
         serializer.save(added_by=self.request.user)
