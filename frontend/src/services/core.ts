@@ -124,3 +124,51 @@ export const vehiclesApi = {
   update: (id: number, data: Partial<Vehicle>) => service.update('/vehicles/', id, data),
   delete: (id: number) => service.delete('/vehicles/', id),
 }
+
+export interface Customer {
+  id: number; tenant: number; name: string; phone: string; email: string
+  address: string; city: string; state: string; source: string
+  created_at: string; updated_at: string
+}
+
+export interface FollowUp {
+  id: number; tenant: number; enquiry: number; assigned_to: number | null
+  note: string; followup_type: string; status: string
+  scheduled_at: string; completed_at: string | null; created_at: string
+}
+
+export interface CommunicationLog {
+  id: number; tenant: number; enquiry: number; staff: number | null
+  note: string; attachment: string; created_at: string
+}
+
+export interface Enquiry {
+  id: number; tenant: number; customer: number; vehicle: number | null
+  showroom: number; assigned_to: number | null; source: string
+  message: string; status: string; expected_budget: string | null
+  created_at: string; updated_at: string
+  followups: FollowUp[]; communication_logs: CommunicationLog[]
+}
+
+export const customersApi = {
+  list: () => service.list<Customer>('/customers/'),
+  get: (id: number) => service.get<Customer>('/customers/', id),
+  create: (data: Partial<Customer>) => service.create('/customers/', data),
+  update: (id: number, data: Partial<Customer>) => service.update('/customers/', id, data),
+  delete: (id: number) => service.delete('/customers/', id),
+}
+
+export const enquiriesApi = {
+  list: () => service.list<Enquiry>('/enquiries/'),
+  get: (id: number) => service.get<Enquiry>('/enquiries/', id),
+  create: (data: Partial<Enquiry>) => service.create('/enquiries/', data),
+  update: (id: number, data: Partial<Enquiry>) => service.update('/enquiries/', id, data),
+  delete: (id: number) => service.delete('/enquiries/', id),
+}
+
+export const followupsApi = {
+  list: (enquiryId: number) => api.get<FollowUp[]>(`/enquiries/${enquiryId}/followups/`).then(r => r.data),
+  create: (enquiryId: number, data: Partial<FollowUp>) => api.post<FollowUp>(`/enquiries/${enquiryId}/followups/`, data).then(r => r.data),
+  update: (enquiryId: number, id: number, data: Partial<FollowUp>) => api.patch<FollowUp>(`/enquiries/${enquiryId}/followups/${id}/`, data).then(r => r.data),
+  complete: (enquiryId: number, id: number) => api.post<FollowUp>(`/enquiries/${enquiryId}/followups/${id}/complete/`).then(r => r.data),
+}
