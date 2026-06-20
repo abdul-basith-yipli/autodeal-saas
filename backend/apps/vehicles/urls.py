@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     VehicleCategoryViewSet, VehicleBrandViewSet, VehicleModelViewSet,
     VehicleYearViewSet, VehicleSpecificationViewSet, VehicleViewSet,
+    VehicleSpecValueViewSet,
     VehicleImageViewSet, VehicleInspectionViewSet, VehiclePriceHistoryViewSet,
 )
 
