@@ -16,3 +16,6 @@ class PositionViewSet(viewsets.ModelViewSet):
 class PerformanceRecordViewSet(viewsets.ModelViewSet):
     queryset = PerformanceRecord.objects.all()
     serializer_class = PerformanceRecordSerializer
+
+    def get_queryset(self):
+        return super().get_queryset().filter(staff_id=self.kwargs["staff_id"])

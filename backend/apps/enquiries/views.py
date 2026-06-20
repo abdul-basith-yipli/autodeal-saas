@@ -20,7 +20,13 @@ class FollowUpViewSet(viewsets.ModelViewSet):
     queryset = FollowUp.objects.all()
     serializer_class = FollowUpSerializer
 
+    def get_queryset(self):
+        return super().get_queryset().filter(enquiry_id=self.kwargs["enquiry_id"])
+
 
 class CommunicationLogViewSet(viewsets.ModelViewSet):
     queryset = CommunicationLog.objects.all()
     serializer_class = CommunicationLogSerializer
+
+    def get_queryset(self):
+        return super().get_queryset().filter(enquiry_id=self.kwargs["enquiry_id"])

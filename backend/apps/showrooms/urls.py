@@ -4,8 +4,8 @@ from .views import ShowroomViewSet, ShowroomPerformanceViewSet
 
 router = DefaultRouter()
 router.register("", ShowroomViewSet)
-router.register(r"(?P<showroom_id>\d+)/performance", ShowroomPerformanceViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("<int:showroom_id>/performance/", ShowroomPerformanceViewSet.as_view({"get": "list", "post": "create"})),
 ]

@@ -43,3 +43,6 @@ class VehicleViewSet(viewsets.ModelViewSet):
 class VehicleImageViewSet(viewsets.ModelViewSet):
     queryset = VehicleImage.objects.all()
     serializer_class = VehicleImageSerializer
+
+    def get_queryset(self):
+        return super().get_queryset().filter(vehicle_id=self.kwargs["vehicle_id"])

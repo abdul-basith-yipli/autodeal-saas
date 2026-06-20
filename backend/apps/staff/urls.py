@@ -4,8 +4,8 @@ from .views import StaffProfileViewSet, PerformanceRecordViewSet
 
 router = DefaultRouter()
 router.register("", StaffProfileViewSet)
-router.register(r"(?P<staff_id>\d+)/performance", PerformanceRecordViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("<int:staff_id>/performance/", PerformanceRecordViewSet.as_view({"get": "list", "post": "create"})),
 ]

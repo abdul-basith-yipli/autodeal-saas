@@ -5,9 +5,9 @@ from .views import CustomerViewSet, EnquiryViewSet, FollowUpViewSet, Communicati
 router = DefaultRouter()
 router.register("customers", CustomerViewSet)
 router.register("enquiries", EnquiryViewSet)
-router.register(r"enquiries/(?P<enquiry_id>\d+)/followups", FollowUpViewSet)
-router.register(r"enquiries/(?P<enquiry_id>\d+)/communication-log", CommunicationLogViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("enquiries/<int:enquiry_id>/followups/", FollowUpViewSet.as_view({"get": "list", "post": "create"})),
+    path("enquiries/<int:enquiry_id>/communication-log/", CommunicationLogViewSet.as_view({"get": "list", "post": "create"})),
 ]

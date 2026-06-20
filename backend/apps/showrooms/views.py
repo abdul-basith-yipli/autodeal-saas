@@ -11,3 +11,6 @@ class ShowroomViewSet(viewsets.ModelViewSet):
 class ShowroomPerformanceViewSet(viewsets.ModelViewSet):
     queryset = ShowroomPerformance.objects.all()
     serializer_class = ShowroomPerformanceSerializer
+
+    def get_queryset(self):
+        return super().get_queryset().filter(showroom_id=self.kwargs["showroom_id"])

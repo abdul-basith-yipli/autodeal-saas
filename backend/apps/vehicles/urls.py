@@ -13,8 +13,8 @@ router.register("models", VehicleModelViewSet)
 router.register("years", VehicleYearViewSet)
 router.register("vehicle-specs", VehicleSpecificationViewSet)
 router.register("vehicles", VehicleViewSet)
-router.register(r"vehicles/(?P<vehicle_id>\d+)/images", VehicleImageViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("vehicles/<int:vehicle_id>/images/", VehicleImageViewSet.as_view({"get": "list", "post": "create"})),
 ]
