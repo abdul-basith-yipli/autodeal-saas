@@ -9,12 +9,12 @@ from .views import (
 router = DefaultRouter()
 router.register("vehicle-categories", VehicleCategoryViewSet)
 router.register("brands", VehicleBrandViewSet)
-router.register("models", VehicleModelViewSet)
-router.register("years", VehicleYearViewSet)
 router.register("vehicle-specs", VehicleSpecificationViewSet)
 router.register("vehicles", VehicleViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("brands/<int:brand_id>/models/", VehicleModelViewSet.as_view({"get": "list", "post": "create"})),
+    path("models/<int:model_id>/years/", VehicleYearViewSet.as_view({"get": "list", "post": "create"})),
     path("vehicles/<int:vehicle_id>/images/", VehicleImageViewSet.as_view({"get": "list", "post": "create"})),
 ]
