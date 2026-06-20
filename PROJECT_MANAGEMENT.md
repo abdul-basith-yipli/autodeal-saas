@@ -26,8 +26,7 @@ Issue (Backlog) → Ready → In progress → PR (In review) → Merged → Issu
    - Labels matching the issue
 5. **PR reviewed and merged** with squash, providing subject explicitly:
    ```bash
-   gh pr merge <number> --squash --delete-branch \
-     --subject "Closes #N: short description"
+   gh pr merge <number> -s -d -t "Closes #N: short description"
    ```
 6. **Issue auto-closes** because `Closes #N` is in the squash commit subject
 

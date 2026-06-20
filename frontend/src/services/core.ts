@@ -73,3 +73,54 @@ export const staffApi = {
   update: (id: number, data: Partial<StaffProfile>) => service.update('/staff/', id, data),
   delete: (id: number) => service.delete('/staff/', id),
 }
+
+export interface VehicleCategory {
+  id: number; name: string; slug: string; parent: number | null
+}
+export interface VehicleBrand {
+  id: number; name: string; logo: string
+}
+export interface VehicleModel {
+  id: number; brand: number; name: string
+}
+export interface VehicleYear {
+  id: number; model: number; year: number
+}
+export interface VehicleImage {
+  id: number; vehicle: number; image: string; is_primary: boolean; sort_order: number
+}
+export interface VehicleSpecValue {
+  id: number; vehicle: number; specification: number; value: any
+}
+export interface VehicleInspection {
+  id: number; vehicle: number; inspector: number; report: string; rating: number; created_at: string
+}
+export interface VehiclePriceHistory {
+  id: number; vehicle: number; old_price: string; new_price: string; changed_by: number; created_at: string
+}
+export interface Vehicle {
+  id: number; tenant: number; showroom: number; category: number | null
+  brand: number | null; model: number | null; year: number; vin: string
+  reg_number: string; mileage: number; fuel_type: string; transmission: string
+  color: string; condition: string; price: string; status: string
+  description: string; added_by: number
+  images: VehicleImage[]; spec_values: VehicleSpecValue[]
+  inspections: VehicleInspection[]; price_history: VehiclePriceHistory[]
+}
+
+export const vehicleCategoriesApi = {
+  list: () => service.list<VehicleCategory>('/vehicle-categories/'),
+}
+export const vehicleBrandsApi = {
+  list: () => service.list<VehicleBrand>('/brands/'),
+}
+export const vehicleModelsApi = {
+  list: (brandId: number) => api.get<{ results: VehicleModel[] }>(`/brands/${brandId}/models/`).then(r => r.data.results),
+}
+export const vehiclesApi = {
+  list: () => service.list<Vehicle>('/vehicles/'),
+  get: (id: number) => service.get<Vehicle>('/vehicles/', id),
+  create: (data: Partial<Vehicle>) => service.create('/vehicles/', data),
+  update: (id: number, data: Partial<Vehicle>) => service.update('/vehicles/', id, data),
+  delete: (id: number) => service.delete('/vehicles/', id),
+}

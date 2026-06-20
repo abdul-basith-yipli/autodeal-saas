@@ -7,6 +7,8 @@ import DashboardPage from './pages/dashboard/DashboardPage'
 import ShowroomsPage from './pages/showrooms/ShowroomsPage'
 import DepartmentsPage from './pages/departments/DepartmentsPage'
 import StaffPage from './pages/staff/StaffPage'
+import VehiclesPage from './pages/vehicles/VehiclesPage'
+import VehicleDetailPage from './pages/vehicles/VehicleDetailPage'
 
 function ProtectedLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -25,6 +27,9 @@ export default function App() {
         <Route path="/showrooms" element={<ProtectedLayout><ShowroomsPage /></ProtectedLayout>} />
         <Route path="/departments" element={<ProtectedLayout><DepartmentsPage /></ProtectedLayout>} />
         <Route path="/staff" element={<ProtectedLayout><StaffPage /></ProtectedLayout>} />
+        <Route path="/vehicles" element={<ProtectedLayout><VehiclesPage /></ProtectedLayout>} />
+        <Route path="/vehicles/:id" element={<ProtectedLayout><VehicleDetailPage /></ProtectedLayout>} />
+        <Route path="/vehicles/:id/edit" element={<ProtectedLayout><VehicleDetailPage /></ProtectedLayout>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AuthProvider>
