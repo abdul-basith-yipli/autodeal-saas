@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { authService, type User } from '../services/auth'
 
 interface AuthContextType {
@@ -13,21 +14,22 @@ const AuthContext = createContext<AuthContextType | null>(null)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
 
   const fetchUser = useCallback(async () => {
-    try {
-      const u = await authService.me()
-      setUser(u)
-    } catch {
-      localStorage.removeItem('access_token')
-      setUser(null)
-    }
+    const u = await authService.me()
+    setUser(u)
   }, [])
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
     if (token) {
-      fetchUser().finally(() => setLoading(false))
+      fetchUser()
+        .catch(() => {
+          localStorage.removeItem('access_token')
+          setUser(null)
+        })
+        .finally(() => setLoading(false))
     } else {
       authService.refresh()
         .then(() => fetchUser())
@@ -42,9 +44,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(u)
   }
 
-  const logout = () => {
-    authService.logout()
+  const logout = async () => {
+    await authService.logout()
     setUser(null)
+    navigate('/login')
   }
 
   return (

@@ -41,7 +41,6 @@ export const authService = {
       await api.post('/auth/logout/')
     } finally {
       localStorage.removeItem('access_token')
-      window.location.href = '/login'
     }
   },
 }
