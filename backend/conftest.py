@@ -2,6 +2,7 @@ import pytest
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
 from apps.tenants.models import Tenant
+from apps.showrooms.models import Showroom
 
 User = get_user_model()
 
@@ -46,3 +47,8 @@ def super_admin():
 def super_admin_client(api_client, super_admin):
     api_client.force_authenticate(user=super_admin)
     return api_client
+
+
+@pytest.fixture
+def showroom(tenant):
+    return Showroom.objects.create(tenant=tenant, name="Main Branch", code="Main")

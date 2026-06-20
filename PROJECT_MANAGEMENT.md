@@ -25,7 +25,9 @@ Issue (Backlog) → Ready → In progress → PR (In review) → Merged → Issu
    - Body with checklist from the issue
    - Labels matching the issue
 5. **PR reviewed and merged** (squash merge recommended)
-6. **Issue auto-closes** via the `Closes #N` keyword in the PR description
+6. **Issue auto-closes** via the `Closes #N` keyword in the PR **body** (not title)
+
+   > Note: For squash merges, include `Closes #N` in the PR body. GitHub detects it there and closes the issue automatically.
 
 ---
 
